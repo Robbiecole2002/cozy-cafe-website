@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Hero from '../components/Hero.astro';
+import { site } from '../data/site';
+import { buildBreadcrumbSchema } from '../lib/schema';
+
+const siteUrl = (Astro.site?.toString() ?? 'https://www.cozycafeedinburgh.co.uk/').replace(/\/$/, '');
+const schema = [buildBreadcrumbSchema(siteUrl, [{ name: 'Home', path: '/' }, { name: 'Privacy', path: '/privacy' }])];
+---
+
+<Layout title={`Privacy Policy${site.seo.titleSuffix}`} description="How Cozy Cafe collects and uses information through this website and cookie consent tool." path="/privacy" schema={schema}>
+  <Hero title="Privacy Policy" compact />
+
+  <Section>
+    <div class="reveal mx-auto max-w-2xl text-ink-muted">
+      <p>
+        This site collects only minimal information needed to understand how it's used. Any analytics on this site only run after you accept
+        our cookie banner, and can be switched off at any time by clearing your browser's local storage or declining when asked.
+      </p>
+
+      <h2 class="mt-8 font-display text-h3 font-semibold text-espresso">Information we collect</h2>
+      <p class="mt-3">
+        We do not collect personal information directly through this website. If you place an order via Mealzo or contact us by phone or social
+        media, that information is handled under Mealzo's, or the relevant platform's, own privacy policy.
+      </p>
+
+      <h2 class="mt-8 font-display text-h3 font-semibold text-espresso">Cookies & analytics</h2>
+      <p class="mt-3">
+        With your consent, we may use privacy-friendly analytics to understand overall visitor numbers and popular pages. No advertising or
+        cross-site tracking cookies are used.
+      </p>
+
+      <h2 class="mt-8 font-display text-h3 font-semibold text-espresso">Contact</h2>
+      <p class="mt-3">
+        Questions about this policy can be sent to us via phone on {site.contact.phoneDisplay} or through our social media pages.
+      </p>
+
+      <p class="mt-8 rounded-card-lg bg-oat p-5 text-sm text-ink-muted">
+        <strong>Placeholder notice:</strong> This is template privacy copy. The owner should confirm this policy meets UK GDPR requirements
+        (including a lawful basis for any analytics used) before launch.
+      </p>
+    </div>
+  </Section>
+</Layout>

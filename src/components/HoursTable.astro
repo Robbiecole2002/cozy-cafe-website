@@ -1,0 +1,34 @@
+---
+import { site } from '../data/site';
+import { formatTimeString } from '../lib/hours';
+
+interface Props {
+  class?: string;
+  compact?: boolean;
+}
+
+const { class: className = '', compact = false } = Astro.props;
+
+// Best-effort "today" for build-time highlighting; the live pill elsewhere handles real-time state.
+const londonToday = new Intl.DateTimeFormat('en-GB', { timeZone: site.timezone, weekday: 'short' }).format(new Date());
+const weekdayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+const todayIndex = weekdayMap[londonToday];
+---
+
+<table class={`w-full border-collapse text-left ${compact ? 'text-sm' : ''} ${className}`}>
+  <caption class="sr-only">Cozy Cafe opening hours</caption>
+  <tbody>
+    {
+      site.hours.map((h) => (
+        <tr class={`border-b border-oat last:border-0 ${h.day === todayIndex ? 'font-semibold text-espresso' : 'text-ink-muted'}`}>
+          <th scope="row" class="py-2 pr-4 font-medium">
+            {h.label}
+          </th>
+          <td class="py-2 text-right tabular-nums">
+            {h.opens && h.closes ? `${formatTimeString(h.opens)} – ${formatTimeString(h.closes)}` : 'Closed'}
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

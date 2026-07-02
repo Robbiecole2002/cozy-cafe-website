@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Hero from '../components/Hero.astro';
+import { site } from '../data/site';
+import { buildBreadcrumbSchema } from '../lib/schema';
+
+const siteUrl = (Astro.site?.toString() ?? 'https://www.cozycafeedinburgh.co.uk/').replace(/\/$/, '');
+const schema = [buildBreadcrumbSchema(siteUrl, [{ name: 'Home', path: '/' }, { name: 'Allergy Guide', path: '/allergy-guide' }])];
+---
+
+<Layout
+  title={`Allergy Guide${site.seo.titleSuffix}`}
+  description="Allergy and intolerance information for Cozy Cafe, Edinburgh. Please call ahead before ordering if you have a food allergy."
+  path="/allergy-guide"
+  schema={schema}
+>
+  <Hero title="Allergy Guide" subtitle="Your safety comes first — please talk to us before you order." compact />
+
+  <Section>
+    <div class="reveal prose-content mx-auto max-w-2xl text-ink-muted">
+      <p class="rounded-card-lg border border-honey/40 bg-honey/10 p-5 text-espresso">
+        <strong>Food allergy or intolerance?</strong> Please call us on
+        <a href={site.contact.phoneHref} class="font-semibold text-clay-ink underline underline-offset-2 hover:text-espresso">{site.contact.phoneDisplay}</a>
+        before ordering, whether you're dining in, collecting or ordering online.
+      </p>
+
+      <h2 class="mt-8 font-display text-h3 font-semibold text-espresso">Our approach</h2>
+      <p class="mt-3">
+        Our kitchen prepares Turkish and British dishes fresh to order using a wide range of ingredients, including gluten, dairy, egg, nuts,
+        sesame and other allergens common to café menus. Because dishes are made in a shared kitchen, we cannot guarantee any item is completely
+        free from traces of an allergen, even if it isn't a stated ingredient.
+      </p>
+
+      <h2 class="mt-8 font-display text-h3 font-semibold text-espresso">Before you order</h2>
+      <p class="mt-3">
+        If you have a food allergy or intolerance, please speak to a member of our team in person, or call ahead on
+        {site.contact.phoneDisplay}, before placing your order — including orders placed online for collection or delivery. We'll do our best to
+        advise on ingredients and suggest suitable options.
+      </p>
+
+      <p class="mt-8 rounded-card-lg bg-oat p-5 text-sm text-ink-muted">
+        <strong>Placeholder notice:</strong> This page provides general guidance only. The owner should confirm full allergen information (in
+        line with UK Food Information Regulations) and replace this text with verified, dish-by-dish allergen data before launch.
+      </p>
+    </div>
+  </Section>
+</Layout>

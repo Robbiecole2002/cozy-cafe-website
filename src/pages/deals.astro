@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Hero from '../components/Hero.astro';
+import DealCard from '../components/DealCard.astro';
+import { site } from '../data/site';
+import { buildBreadcrumbSchema } from '../lib/schema';
+
+const siteUrl = (Astro.site?.toString() ?? 'https://www.cozycafeedinburgh.co.uk/').replace(/\/$/, '');
+const schema = [buildBreadcrumbSchema(siteUrl, [{ name: 'Home', path: '/' }, { name: 'Deals', path: '/deals' }])];
+---
+
+<Layout
+  title={`Deals${site.seo.titleSuffix}`}
+  description="Current offers at Cozy Cafe, Edinburgh — 20% off online collection over £20, the Full Brekkie Deal, Brunch Deal and Cozy Duo Deal."
+  path="/deals"
+  schema={schema}
+>
+  <Hero title="Deals" subtitle="Great value, every day of the week." compact />
+
+  <Section>
+    <h2 class="sr-only">Current offers</h2>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {site.offers.map((offer) => <DealCard offer={offer} />)}
+    </div>
+    <p class="mt-8 text-sm text-ink-muted">{site.surchargeNote}</p>
+  </Section>
+</Layout>

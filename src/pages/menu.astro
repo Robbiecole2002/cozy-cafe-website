@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Hero from '../components/Hero.astro';
+import MenuSection from '../components/MenuSection.astro';
+import { site } from '../data/site';
+import { menu } from '../data/menu';
+import { buildMenuSchema, buildBreadcrumbSchema } from '../lib/schema';
+
+const siteUrl = (Astro.site?.toString() ?? 'https://www.cozycafeedinburgh.co.uk/').replace(/\/$/, '');
+const schema = [
+  buildMenuSchema(siteUrl),
+  buildBreadcrumbSchema(siteUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Menu', path: '/menu' },
+  ]),
+];
+---
+
+<Layout
+  title={`Menu${site.seo.titleSuffix}`}
+  description="The full Cozy Cafe menu — Turkish breakfast, Full Scottish, burek, gözleme, burgers, paninis, wraps and more. Order online for collection or delivery via Mealzo."
+  path="/menu"
+  schema={schema}
+>
+  <Hero title="Our Menu" subtitle="Freshly made every day, from Turkish street food to a proper Scottish fry-up." compact />
+
+  <Section class="!pb-0">
+    <div class="reveal flex flex-col gap-3 rounded-card-lg border border-honey/40 bg-honey/10 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <p class="text-sm text-espresso">
+        <strong>Food allergy or intolerance?</strong> Please call
+        <a href={site.contact.phoneHref} class="font-semibold text-clay-ink underline underline-offset-2 hover:text-espresso">{site.contact.phoneDisplay}</a>
+        before ordering, or read our <a href="/allergy-guide" class="font-semibold text-clay-ink underline underline-offset-2 hover:text-espresso">allergy guide</a>.
+      </p>
+    </div>
+  </Section>
+
+  <div id="menu-category-nav" class="sticky top-[57px] z-20 border-b border-oat bg-cream/95 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-5 py-3 [scrollbar-width:none] sm:px-8 [&::-webkit-scrollbar]:hidden">
+      {menu.map((category) => (
+        <a href={`#${category.id}`} class="menu-chip">{category.title}</a>
+      ))}
+    </div>
+  </div>
+
+  <Section>
+    <div class="reveal mb-8 flex flex-col gap-2 rounded-card-lg bg-oat p-5 text-sm text-ink-muted sm:flex-row sm:items-center sm:justify-between">
+      <p>Collection starts at 8:30am. Delivery is handled via Mealzo and our Android app — this site does not process payments directly.</p>
+      <a
+        href={site.links.order}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex shrink-0 items-center justify-center rounded-pill bg-clay px-5 py-2.5 text-sm font-semibold text-cream shadow-warm-sm transition-all hover:-translate-y-0.5 hover:bg-clay-ink hover:shadow-warm-md active:translate-y-0"
+      >
+        Order Online
+      </a>
+    </div>
+
+    {menu.map((category) => <MenuSection category={category} />)}
+
+    <p class="mt-6 text-xs text-ink-muted">{site.surchargeNote}</p>
+  </Section>
+
+  <script src="../scripts/menu-scrollspy.ts"></script>
+</Layout>

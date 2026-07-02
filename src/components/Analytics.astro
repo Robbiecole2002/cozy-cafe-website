@@ -1,0 +1,26 @@
+---
+/**
+ * Analytics scripts are rendered inert (type="text/plain") and only
+ * activated by CookieConsent.astro once the visitor accepts cookies —
+ * see src/scripts/cookie-consent.ts. Nothing loads until `site.analytics.enabled`
+ * is switched on with a real ID, and even then only after consent.
+ */
+import { site } from '../data/site';
+
+const { enabled, provider, plausibleDomain, ga4Id } = site.analytics;
+---
+
+{
+  enabled && provider === 'plausible' && (
+    <script is:inline type="text/plain" data-consent="analytics" data-src="https://plausible.io/js/script.js" data-domain={plausibleDomain} defer />
+  )
+}
+
+{
+  enabled && provider === 'ga4' && ga4Id && (
+    <>
+      <script is:inline type="text/plain" data-consent="analytics" data-src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} async />
+      <script is:inline type="text/plain" data-consent="analytics" set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4Id}');`} />
+    </>
+  )
+}

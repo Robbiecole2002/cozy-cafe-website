@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Hero from '../components/Hero.astro';
+import { site } from '../data/site';
+import { buildBreadcrumbSchema } from '../lib/schema';
+
+const siteUrl = (Astro.site?.toString() ?? 'https://www.cozycafeedinburgh.co.uk/').replace(/\/$/, '');
+const schema = [buildBreadcrumbSchema(siteUrl, [{ name: 'Home', path: '/' }, { name: 'Terms', path: '/terms' }])];
+---
+
+<Layout title={`Terms & Conditions${site.seo.titleSuffix}`} description="Terms and conditions for using the Cozy Cafe website and ordering services." path="/terms" schema={schema}>
+  <Hero title="Terms & Conditions" compact />
+
+  <Section>
+    <div class="reveal mx-auto max-w-2xl text-ink-muted">
+      <p>
+        These terms cover your use of this website. {site.name} is located at {site.contact.addressFull}. Online ordering, payment and delivery
+        are provided by our ordering partner, Mealzo, and are subject to Mealzo's own terms and conditions at checkout.
+      </p>
+
+      <h2 class="mt-8 font-display text-h3 font-semibold text-espresso">Orders and pricing</h2>
+      <p class="mt-3">
+        Menu items and prices shown on this site and via Mealzo are correct at the time of publishing but may change without notice.
+        {site.surchargeNote}
+      </p>
+
+      <h2 class="mt-8 font-display text-h3 font-semibold text-espresso">Website use</h2>
+      <p class="mt-3">
+        Content on this site is provided for general information about {site.name}. We aim to keep it accurate and up to date but make no
+        guarantees about completeness or fitness for a particular purpose.
+      </p>
+
+      <p class="mt-8 rounded-card-lg bg-oat p-5 text-sm text-ink-muted">
+        <strong>Placeholder notice:</strong> This is template legal copy, not a substitute for professional legal advice. The owner should
+        confirm final terms and conditions — including any consumer rights, cancellation and delivery clauses — before launch.
+      </p>
+    </div>
+  </Section>
+</Layout>

@@ -1,0 +1,22 @@
+---
+interface Props {
+  id?: string;
+  class?: string;
+  background?: 'cream' | 'oat' | 'espresso';
+  as?: 'section' | 'div';
+}
+
+const { id, class: className = '', background = 'cream', as: Tag = 'section' } = Astro.props;
+
+const backgrounds: Record<string, string> = {
+  cream: 'bg-cream',
+  oat: 'bg-oat',
+  espresso: 'bg-espresso text-cream',
+};
+---
+
+<Tag id={id} class={`py-section ${backgrounds[background]} ${className}`}>
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <slot />
+  </div>
+</Tag>

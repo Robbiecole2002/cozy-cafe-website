@@ -1,0 +1,129 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+
+<button
+  id="nav-toggle"
+  type="button"
+  aria-expanded="false"
+  aria-controls="mobile-nav-panel"
+  aria-label="Open menu"
+  class="inline-flex size-11 items-center justify-center rounded-full text-espresso transition-colors hover:bg-oat active:bg-oat/80 lg:hidden"
+>
+  <Icon name="menu" class="size-6" />
+</button>
+
+<div id="mobile-nav-backdrop" class="fixed inset-0 z-40 bg-espresso/40 opacity-0 pointer-events-none transition-opacity duration-300" hidden></div>
+
+<div
+  id="mobile-nav-panel"
+  class="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm translate-x-full flex-col bg-cream shadow-warm-lg transition-transform duration-300"
+  style="transition-timing-function: var(--ease-warm);"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Site navigation"
+  hidden
+>
+  <div class="flex items-center justify-between border-b border-oat p-5">
+    <span class="font-display text-lg font-medium text-espresso">Menu</span>
+    <button id="nav-close" type="button" aria-label="Close menu" class="inline-flex size-11 items-center justify-center rounded-full text-espresso transition-colors hover:bg-oat active:bg-oat/80">
+      <Icon name="close" class="size-6" />
+    </button>
+  </div>
+
+  <nav aria-label="Mobile" class="flex flex-1 flex-col gap-1 overflow-y-auto p-5">
+    {
+      site.nav.map((link) => (
+        <a href={link.href} class="rounded-card px-3 py-3 font-display text-lg text-espresso transition-colors hover:bg-oat">
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="flex flex-col gap-3 border-t border-oat p-5">
+    <a
+      href={site.links.order}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center justify-center rounded-pill bg-clay px-5 py-3 text-center font-semibold text-cream shadow-warm-sm transition-all hover:-translate-y-0.5 hover:bg-clay-ink active:translate-y-0"
+    >
+      Order Online
+    </a>
+    <a
+      href={site.contact.phoneHref}
+      class="inline-flex items-center justify-center gap-2 rounded-pill border border-espresso/15 px-5 py-3 text-center font-semibold text-espresso transition-colors hover:bg-oat"
+    >
+      <Icon name="phone" class="size-4" />
+      {site.contact.phoneDisplay}
+    </a>
+  </div>
+</div>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const closeBtn = document.getElementById('nav-close');
+  const panel = document.getElementById('mobile-nav-panel');
+  const backdrop = document.getElementById('mobile-nav-backdrop');
+  const focusableSelector = 'a[href], button:not([disabled])';
+  let lastFocused: HTMLElement | null = null;
+
+  function onKeydown(e: KeyboardEvent) {
+    if (!panel) return;
+    if (e.key === 'Escape') {
+      closeNav();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusables = Array.from(panel.querySelectorAll<HTMLElement>(focusableSelector));
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  function openNav() {
+    if (!panel || !backdrop || !toggle) return;
+    lastFocused = document.activeElement as HTMLElement | null;
+    panel.hidden = false;
+    backdrop.hidden = false;
+    requestAnimationFrame(() => {
+      panel.classList.remove('translate-x-full');
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+    });
+    toggle.setAttribute('aria-expanded', 'true');
+    document.documentElement.classList.add('overflow-hidden');
+    panel.querySelector<HTMLElement>(focusableSelector)?.focus();
+    document.addEventListener('keydown', onKeydown);
+  }
+
+  function closeNav() {
+    if (!panel || !backdrop || !toggle) return;
+    panel.classList.add('translate-x-full');
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.documentElement.classList.remove('overflow-hidden');
+    document.removeEventListener('keydown', onKeydown);
+    lastFocused?.focus();
+
+    const finish = () => {
+      panel.hidden = true;
+      backdrop.hidden = true;
+      panel.removeEventListener('transitionend', finish);
+    };
+    panel.addEventListener('transitionend', finish);
+    setTimeout(finish, 400);
+  }
+
+  toggle?.addEventListener('click', openNav);
+  closeBtn?.addEventListener('click', closeNav);
+  backdrop?.addEventListener('click', closeNav);
+  panel?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeNav));
+</script>

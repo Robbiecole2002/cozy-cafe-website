@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Hero from '../components/Hero.astro';
+import FoodImage from '../components/FoodImage.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { buildBreadcrumbSchema } from '../lib/schema';
+
+const siteUrl = (Astro.site?.toString() ?? 'https://www.cozycafeedinburgh.co.uk/').replace(/\/$/, '');
+const schema = [buildBreadcrumbSchema(siteUrl, [{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }])];
+
+const values = [
+  { icon: 'leaf' as const, title: 'Fresh', description: 'Ingredients sourced and prepped daily — nothing sits around.' },
+  { icon: 'flame' as const, title: 'Made-to-order', description: 'Every breakfast, panini and burger is cooked fresh when you order.' },
+  { icon: 'check' as const, title: 'Welcoming', description: 'A neighbourhood café where regulars are greeted by name.' },
+];
+---
+
+<Layout
+  title={`About Us${site.seo.titleSuffix}`}
+  description="The story behind Cozy Cafe — a Turkish and British breakfast café on Ferry Road, Leith, Edinburgh, serving fresh food made daily."
+  path="/about"
+  schema={schema}
+>
+  <Hero title="Our Story" subtitle="Two food cultures, one neighbourhood café." compact />
+
+  <Section>
+    <div class="grid items-center gap-10 lg:grid-cols-2">
+      <div class="reveal">
+        <h2 class="font-display text-h2 font-semibold text-espresso">Turkish roots, Scottish home</h2>
+        <p class="mt-4 text-ink-muted">
+          Cozy Cafe was built on a simple idea: bring the generous, hand-made spirit of a Turkish breakfast table to a Leith neighbourhood spot,
+          and serve it alongside the Full Scottish that this city grew up on. Every morning our kitchen prepares fresh burek, gözleme, simit and
+          mezze the traditional way, right next to sizzling sausages, tattie scones and properly brewed coffee.
+        </p>
+        <p class="mt-4 text-ink-muted">
+          We're on Ferry Road, in the middle of Leith — a part of Edinburgh that's always been about good food and friendly faces. Whether you're
+          in for a quick coffee and simit before work or settling in for a full Turkish breakfast spread with friends, everything on the table is
+          prepared daily using fresh ingredients, never pre-made and reheated.
+        </p>
+      </div>
+      <div class="reveal grid grid-cols-2 gap-4">
+        <FoodImage alt="Turkish breakfast spread at Cozy Cafe" label="Turkish breakfast spread" aspect="3/4" />
+        <FoodImage alt="Full Scottish breakfast at Cozy Cafe" label="Full Scottish breakfast" aspect="3/4" class="mt-8" />
+        <FoodImage alt="Fresh gözleme being prepared" label="Gözleme, made fresh" aspect="1/1" />
+        <FoodImage alt="Turkish coffee and tea served at Cozy Cafe" label="Turkish coffee & tea" aspect="1/1" class="mt-[-2rem]" />
+      </div>
+    </div>
+  </Section>
+
+  <Section background="oat">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-h2 font-display font-semibold text-espresso">What we stand for</h2>
+    </div>
+    <div class="mt-10 grid gap-6 sm:grid-cols-3">
+      {values.map((value) => (
+        <div class="reveal flex flex-col items-center gap-3 rounded-card-lg bg-white p-6 text-center shadow-warm-sm">
+          <span class="inline-flex size-12 items-center justify-center rounded-full bg-sage/15 text-sage">
+            <Icon name={value.icon} class="size-6" />
+          </span>
+          <h3 class="font-display text-lg font-medium text-espresso">{value.title}</h3>
+          <p class="text-sm text-ink-muted">{value.description}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <Section>
+    <div class="reveal mx-auto max-w-2xl rounded-card-lg bg-oat p-8 text-center">
+      <h2 class="font-display text-h3 font-semibold text-espresso">Come say hello</h2>
+      <p class="mt-3 text-ink-muted">{site.shortDescription}</p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <a
+          href="/menu"
+          class="inline-flex items-center justify-center rounded-pill bg-clay px-6 py-3 font-semibold text-cream shadow-warm-sm transition-all hover:-translate-y-0.5 hover:bg-clay-ink hover:shadow-warm-md active:translate-y-0"
+        >
+          View Menu
+        </a>
+        <a
+          href="/visit"
+          class="inline-flex items-center justify-center rounded-pill border border-espresso/15 px-6 py-3 font-semibold text-espresso transition-colors hover:bg-cream"
+        >
+          Visit Us
+        </a>
+      </div>
+    </div>
+  </Section>
+</Layout>

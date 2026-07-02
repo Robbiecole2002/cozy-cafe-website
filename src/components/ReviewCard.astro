@@ -1,0 +1,20 @@
+---
+import RatingStars from './RatingStars.astro';
+
+interface Props {
+  quote: string;
+  author: string;
+  placeholder?: boolean;
+}
+
+const { quote, author, placeholder = false } = Astro.props;
+---
+
+<figure class="reveal flex flex-col gap-4 rounded-card-lg bg-white p-6 shadow-warm-sm">
+  <RatingStars value={5} showCount={false} />
+  <blockquote class="flex-1 font-display text-lg leading-snug text-espresso italic">"{quote}"</blockquote>
+  <figcaption class="flex items-center justify-between text-sm text-ink-muted">
+    <span>{author}</span>
+    {placeholder && <span class="rounded-pill bg-oat px-2.5 py-0.5 text-xs font-medium text-ink-muted">Placeholder — owner to replace</span>}
+  </figcaption>
+</figure>

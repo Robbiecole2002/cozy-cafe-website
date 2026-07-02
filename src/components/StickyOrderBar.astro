@@ -1,0 +1,59 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+
+const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${site.contact.geo.lat},${site.contact.geo.lng}`;
+---
+
+<div
+  id="sticky-order-bar"
+  class="fixed inset-x-0 bottom-0 z-30 flex translate-y-0 items-stretch gap-px border-t border-oat bg-cream/95 shadow-[0_-8px_24px_-8px_rgba(58,42,32,0.18)] backdrop-blur transition-transform duration-300 lg:hidden"
+  style={`padding-bottom: env(safe-area-inset-bottom); transition-timing-function: var(--ease-warm);`}
+>
+  <a href={directionsHref} target="_blank" rel="noopener noreferrer" class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2.5 text-espresso transition-colors hover:bg-oat active:bg-oat/80">
+    <Icon name="directions" class="size-5" />
+    <span class="text-xs font-semibold">Directions</span>
+  </a>
+  <a href={site.contact.phoneHref} class="flex flex-1 flex-col items-center justify-center gap-0.5 py-2.5 text-espresso transition-colors hover:bg-oat active:bg-oat/80">
+    <Icon name="phone" class="size-5" />
+    <span class="text-xs font-semibold">Call</span>
+  </a>
+  <a
+    href={site.links.order}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="flex flex-[1.4] flex-col items-center justify-center gap-0.5 bg-clay py-2.5 text-cream transition-colors hover:bg-clay-ink active:bg-clay"
+  >
+    <Icon name="bag" class="size-5" />
+    <span class="text-xs font-semibold">Order Online</span>
+  </a>
+</div>
+
+<script>
+  const bar = document.getElementById('sticky-order-bar');
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  function onScroll() {
+    if (!bar) return;
+    const y = window.scrollY;
+    if (y > lastY && y > 120) {
+      bar.classList.add('translate-y-full');
+    } else {
+      bar.classList.remove('translate-y-full');
+    }
+    lastY = y;
+    ticking = false;
+  }
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+</script>

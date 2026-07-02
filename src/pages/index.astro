@@ -1,0 +1,199 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import DishCard from '../components/DishCard.astro';
+import DealCard from '../components/DealCard.astro';
+import ReviewCard from '../components/ReviewCard.astro';
+import Hero from '../components/Hero.astro';
+import Icon from '../components/Icon.astro';
+import RatingStars from '../components/RatingStars.astro';
+import HoursTable from '../components/HoursTable.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import { site } from '../data/site';
+import { buildRestaurantSchema } from '../lib/schema';
+import type { MenuBadge } from '../data/menu';
+
+const siteUrl = (Astro.site?.toString() ?? 'https://www.cozycafeedinburgh.co.uk/').replace(/\/$/, '');
+
+const categories = [
+  { id: 'all-day-breakfast', emoji: '🍳', title: 'All Day Breakfast', description: 'Full Scottish, Full English & more, served all day.' },
+  { id: 'turkish-specials', emoji: '🥙', title: 'Turkish Specials', description: 'Borek, gözleme, simit and mezze made fresh daily.' },
+  { id: 'paninis', emoji: '🥪', title: 'Paninis', description: 'Toasted and packed with generous fillings.' },
+  { id: 'burgers', emoji: '🍔', title: 'Burgers', description: 'Beef, bacon, chicken and our famous Mexican Burger.' },
+  { id: 'wraps', emoji: '🌯', title: 'Wraps', description: 'Falafel, chicken tikka and more, plain or loaded.' },
+  { id: 'hot-drinks', emoji: '☕', title: 'Hot Drinks', description: 'Turkish coffee, Turkish tea and classic espresso.' },
+];
+
+const signatureDishes: { name: string; price: string; description: string; badges?: MenuBadge[] }[] = [
+  { name: 'Turkish Breakfast', price: '£13.50', description: 'Cheeses, olives, tomato, cucumber, eggs, honey, jam and warm bread — a generous spread for sharing.', badges: ['Popular'] },
+  { name: 'Full Scottish', price: '£10.40', description: 'Sausage, bacon, egg, beans, tattie scone and all the trimmings — the neighbourhood classic.' },
+  { name: 'Halloumi & Sucuk Simit', price: '£8.40', description: 'Warm sesame-crusted simit filled with grilled halloumi and Turkish sucuk sausage.' },
+  { name: 'Homemade Pancakes', price: '£8.50', description: 'A fluffy stack with your choice of Nutella, banana or maple syrup.' },
+];
+
+const reviews = [
+  { quote: 'Best Turkish breakfast in Edinburgh, hands down. Generous portions and the staff make you feel like family.', author: 'Google review' },
+  { quote: 'Our go-to spot on Ferry Road. The Full Scottish is huge and the coffee is properly good.', author: 'Google review' },
+  { quote: 'Gözleme was incredible, and the halloumi simit has become our weekend ritual.', author: 'Google review' },
+];
+---
+
+<Layout
+  title={`Cozy Cafe${site.seo.titleSuffix}`}
+  description={site.seo.defaultDescription}
+  path="/"
+  schema={[buildRestaurantSchema(siteUrl)]}
+>
+  <Hero title={site.name} subtitle={site.tagline} showActions />
+
+  <Section background="oat" class="!py-8 sm:!py-10">
+    <div class="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
+      <RatingStars value={site.rating.value} count={site.rating.count} />
+      <p class="flex items-center gap-2 font-display text-lg text-espresso">
+        <Icon name="clock" class="size-5 text-clay" />
+        Open 6 days · Ferry Road, Leith
+      </p>
+      <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold text-ink-muted">
+        {site.services.map((service) => (
+          <li class="flex items-center gap-1.5">
+            <Icon name="check" class="size-4 text-sage" />
+            {service}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Section>
+
+  <Section>
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-h2 font-display font-semibold text-espresso">Find your favourite</h2>
+      <p class="mt-3 text-ink-muted">From a full Scottish fry-up to warm Turkish street food — browse the full menu by category.</p>
+    </div>
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {categories.map((cat) => (
+        <CategoryCard href={`/menu#${cat.id}`} emoji={cat.emoji} title={cat.title} description={cat.description} />
+      ))}
+    </div>
+  </Section>
+
+  <Section background="oat">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-h2 font-display font-semibold text-espresso">Signature dishes</h2>
+      <p class="mt-3 text-ink-muted">Prepared daily by our chefs, using fresh ingredients — these are the dishes people come back for.</p>
+    </div>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {signatureDishes.map((dish) => (
+        <DishCard name={dish.name} price={dish.price} description={dish.description} badges={dish.badges} />
+      ))}
+    </div>
+  </Section>
+
+  <Section background="espresso" class="relative overflow-hidden">
+    <div class="relative flex flex-col items-center gap-4 text-center">
+      <span class="rounded-pill bg-honey px-4 py-1.5 text-sm font-bold uppercase tracking-wide text-espresso">Current deals</span>
+      <h2 class="text-h2 font-display font-semibold text-cream">Great food, even better value</h2>
+      <p class="max-w-xl text-cream/80">{site.surchargeNote}</p>
+    </div>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {site.offers.filter((o) => o.slug !== 'collection-20').map((offer) => <DealCard offer={offer} />)}
+    </div>
+    <div class="mt-8 flex justify-center">
+      <a href="/deals" class="inline-flex items-center gap-1 font-semibold text-honey hover:text-cream">
+        See all deals
+        <Icon name="chevron-down" class="size-4 -rotate-90" />
+      </a>
+    </div>
+  </Section>
+
+  <Section>
+    <div class="grid items-center gap-10 lg:grid-cols-2">
+      <div class="reveal order-2 lg:order-1">
+        <h2 class="text-h2 font-display font-semibold text-espresso">A neighbourhood spot, made with heart</h2>
+        <p class="mt-4 text-ink-muted">
+          Welcome to Cozy Cafe — your neighbourhood spot on Ferry Road for freshly made breakfasts, fluffy pancakes, sizzling burgers, warm wraps
+          and authentic Turkish delights. From a Full Scottish to a traditional Turkish breakfast, everything is prepared daily by our chefs using
+          fresh ingredients.
+        </p>
+        <p class="mt-4 text-ink-muted">Dine in, take away, or order online for collection — right here in Leith, Edinburgh.</p>
+        <a
+          href="/about"
+          class="mt-6 inline-flex items-center gap-1 rounded-pill border border-espresso/15 px-5 py-2.5 font-semibold text-espresso transition-colors hover:bg-oat"
+        >
+          Our story
+          <Icon name="chevron-down" class="size-4 -rotate-90" />
+        </a>
+      </div>
+      <div class="reveal order-1 lg:order-2">
+        <div
+          class="aspect-[4/3] w-full rounded-card-lg border-2 border-dashed border-clay/25 bg-gradient-to-br from-oat to-cream"
+          role="img"
+          aria-label="Photo of the Cozy Cafe team preparing breakfast, coming soon"
+        >
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section background="oat">
+    <div class="mx-auto max-w-2xl text-center">
+      <RatingStars value={site.rating.value} count={site.rating.count} class="justify-center" />
+      <h2 class="mt-3 text-h2 font-display font-semibold text-espresso">Loved by our regulars</h2>
+    </div>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {reviews.map((r) => <ReviewCard quote={r.quote} author={r.author} placeholder />)}
+    </div>
+    <div class="mt-8 flex justify-center">
+      <a
+        href="https://www.google.com/search?q=Cozy+Cafe+Edinburgh+reviews"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1 font-semibold text-clay-ink hover:text-espresso"
+      >
+        Read our Google reviews
+        <Icon name="external" class="size-4" />
+      </a>
+    </div>
+  </Section>
+
+  <Section>
+    <div class="grid gap-10 lg:grid-cols-2">
+      <div class="reveal">
+        <h2 class="text-h2 font-display font-semibold text-espresso">Visit us on Ferry Road</h2>
+        <address class="mt-4 not-italic text-ink-muted">{site.contact.addressFull}</address>
+        <div class="mt-4">
+          <HoursTable />
+        </div>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a
+            href={site.links.order}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-pill bg-clay px-5 py-3 font-semibold text-cream shadow-warm-sm transition-all hover:-translate-y-0.5 hover:bg-clay-ink hover:shadow-warm-md active:translate-y-0"
+          >
+            Order Online
+          </a>
+          <a
+            href={site.contact.phoneHref}
+            class="inline-flex items-center justify-center gap-2 rounded-pill border border-espresso/15 px-5 py-3 font-semibold text-espresso transition-colors hover:bg-oat"
+          >
+            <Icon name="phone" class="size-4" />
+            Call
+          </a>
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${site.contact.geo.lat},${site.contact.geo.lng}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-pill border border-espresso/15 px-5 py-3 font-semibold text-espresso transition-colors hover:bg-oat"
+          >
+            <Icon name="directions" class="size-4" />
+            Directions
+          </a>
+        </div>
+      </div>
+      <div class="reveal">
+        <MapEmbed />
+      </div>
+    </div>
+  </Section>
+</Layout>

@@ -1,0 +1,25 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  class?: string;
+  height?: string;
+}
+
+const { class: className = '', height = '360' } = Astro.props;
+const { lat, lng } = site.contact.geo;
+const src = `https://www.google.com/maps?q=${lat},${lng}(${encodeURIComponent(site.name)})&z=16&output=embed`;
+---
+
+<div class={`overflow-hidden rounded-card-lg shadow-warm-sm ${className}`}>
+  <iframe
+    src={src}
+    width="100%"
+    height={height}
+    style="border:0;"
+    allowfullscreen={false}
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    title={`Map showing ${site.name} at ${site.contact.addressFull}`}
+  ></iframe>
+</div>

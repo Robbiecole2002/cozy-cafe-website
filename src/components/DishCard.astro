@@ -1,0 +1,31 @@
+---
+import FoodImage from './FoodImage.astro';
+import Badge from './Badge.astro';
+import type { MenuBadge } from '../data/menu';
+
+interface Props {
+  name: string;
+  description: string;
+  price: string;
+  image?: string;
+  badges?: MenuBadge[];
+}
+
+const { name, description, price, image, badges = [] } = Astro.props;
+---
+
+<article class="reveal flex flex-col overflow-hidden rounded-card-lg bg-white/60 shadow-warm-sm transition-shadow duration-300 hover:shadow-warm-md">
+  <FoodImage src={image} alt={name} label={name} aspect="4/3" />
+  <div class="flex flex-1 flex-col gap-2 p-5">
+    <div class="flex items-start justify-between gap-3">
+      <h3 class="font-display text-lg font-medium text-espresso">{name}</h3>
+      <span class="whitespace-nowrap font-display text-lg font-medium text-clay-ink">{price}</span>
+    </div>
+    <p class="text-sm leading-relaxed text-ink-muted">{description}</p>
+    {badges.length > 0 && (
+      <div class="mt-1 flex flex-wrap gap-1.5">
+        {badges.map((b) => <Badge type={b} />)}
+      </div>
+    )}
+  </div>
+</article>

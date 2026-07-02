@@ -1,0 +1,15 @@
+---
+import { site } from '../data/site';
+import { getOpenStatus } from '../lib/hours';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+const status = getOpenStatus(site.hours, site.timezone);
+---
+
+<span class={`open-status-pill ${status.isOpen ? 'is-open' : 'is-closed'} ${className}`} data-open-status-pill>
+  <span data-open-status-text>{status.label}</span>
+</span>

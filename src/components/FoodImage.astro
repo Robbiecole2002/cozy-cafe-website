@@ -1,0 +1,46 @@
+---
+/**
+ * Renders a real photo when `src` is supplied, otherwise a tasteful,
+ * explicitly-sized placeholder so layout never shifts (CLS) once real
+ * photography is dropped in. See TODO.md for the full photo shot list.
+ */
+interface Props {
+  src?: string;
+  alt: string;
+  label?: string;
+  aspect?: '4/3' | '1/1' | '16/9' | '3/4';
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  sizes?: string;
+  priority?: boolean;
+}
+
+const { src, alt, label, aspect = '4/3', class: className = '', loading = 'lazy', sizes } = Astro.props;
+
+const aspectClass: Record<string, string> = {
+  '4/3': 'aspect-[4/3]',
+  '1/1': 'aspect-square',
+  '16/9': 'aspect-video',
+  '3/4': 'aspect-[3/4]',
+};
+---
+
+{
+  src ? (
+    <img src={src} alt={alt} loading={loading} decoding="async" sizes={sizes} class={`${aspectClass[aspect]} w-full rounded-card-lg object-cover ${className}`} />
+  ) : (
+    <div
+      class={`${aspectClass[aspect]} flex w-full flex-col items-center justify-center gap-2 rounded-card-lg border-2 border-dashed border-clay/25 bg-gradient-to-br from-oat to-cream text-center ${className}`}
+      aria-hidden={alt === '' ? 'true' : undefined}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-8 text-clay/40" aria-hidden="true">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z" />
+        <line x1="6" y1="1" x2="6" y2="4" />
+        <line x1="10" y1="1" x2="10" y2="4" />
+        <line x1="14" y1="1" x2="14" y2="4" />
+      </svg>
+      <span class="px-4 text-xs font-medium text-ink-muted">{label ?? 'Photo coming soon'}</span>
+    </div>
+  )
+}

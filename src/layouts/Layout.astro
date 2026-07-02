@@ -1,0 +1,53 @@
+---
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyOrderBar from '../components/StickyOrderBar.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import Analytics from '../components/Analytics.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  image?: string;
+  schema?: Record<string, unknown>[];
+}
+
+const { title, description, path, image, schema } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="theme-color" content="#3A2A20" />
+    <SEO title={title} description={description} path={path} image={image} schema={schema} />
+    <Analytics />
+  </head>
+  <body class="min-h-screen bg-cream font-sans text-espresso antialiased">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-pill focus:bg-clay focus:px-5 focus:py-3 focus:text-cream"
+    >
+      Skip to main content
+    </a>
+
+    <Header />
+
+    <main id="main-content" class="pb-20 lg:pb-0">
+      <slot />
+    </main>
+
+    <Footer />
+    <StickyOrderBar />
+    <CookieConsent />
+
+    <script src="../scripts/reveal.ts"></script>
+    <script src="../scripts/open-status.ts"></script>
+  </body>
+</html>

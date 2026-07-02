@@ -1,0 +1,218 @@
+@import 'tailwindcss';
+
+/* Self-hosted variable fonts (Fontsource) — no Google Fonts, no render-blocking requests. */
+@import '@fontsource-variable/fraunces/standard.css';
+@import '@fontsource-variable/fraunces/standard-italic.css';
+@import '@fontsource-variable/plus-jakarta-sans/wght.css';
+
+/* ------------------------------------------------------------------ */
+/* Design tokens — Cozy Cafe brand system (Tailwind v4 CSS-first theme) */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Brand palette */
+  --color-espresso: #3a2a20;
+  --color-clay: #b7472a;
+  --color-paprika: #d9663b;
+  --color-cream: #fbf6ee;
+  --color-oat: #efe4d2;
+  --color-sage: #6e7a5a;
+  --color-honey: #e7a83e;
+  --color-ink-muted: #6b5b4e;
+
+  /*
+   * Deepened variants for text/links on light backgrounds only. The brand
+   * hues above are tuned for buttons, badges and icons; at their literal
+   * values, clay and sage both fall short of 4.5:1 against oat/cream for
+   * body-size text, and paprika can't hit 4.5:1 against cream or espresso
+   * at any weight. Interactive text/hover states use these instead so
+   * every state (not just the resting one) stays WCAG 2.2 AA.
+   */
+  --color-clay-ink: #9c3a20;
+  --color-sage-ink: #54593f;
+
+  /* Typography */
+  --font-display: 'Fraunces Variable', 'Fraunces', ui-serif, Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid type scale */
+  --text-h1: clamp(2.4rem, 5vw, 4rem);
+  --text-h1--line-height: 1.04;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h2: clamp(1.9rem, 4vw, 3rem);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h3: clamp(1.4rem, 2.5vw, 2rem);
+  --text-h3--line-height: 1.2;
+  --text-lead: clamp(1.05rem, 1.4vw, 1.3rem);
+  --text-lead--line-height: 1.55;
+  --text-body-lg: clamp(1.05rem, 1.2vw, 1.15rem);
+  --text-body-lg--line-height: 1.6;
+
+  /* Generous, hand-made radii */
+  --radius-card: 1.25rem;
+  --radius-card-lg: 1.5rem;
+  --radius-pill: 999px;
+
+  /* Warm-tinted, low-spread shadows (never harsh grey) */
+  --shadow-warm-sm: 0 1px 2px 0 rgb(58 42 32 / 0.06), 0 1px 1px 0 rgb(183 71 42 / 0.05);
+  --shadow-warm-md: 0 8px 24px -8px rgb(58 42 32 / 0.18), 0 2px 8px -2px rgb(183 71 42 / 0.08);
+  --shadow-warm-lg: 0 24px 48px -16px rgb(58 42 32 / 0.22), 0 8px 16px -4px rgb(183 71 42 / 0.1);
+
+  /* Airy section rhythm */
+  --spacing-section: clamp(4rem, 8vw, 7rem);
+  --spacing-section-sm: clamp(2.5rem, 5vw, 4rem);
+
+  /* Motion */
+  --ease-warm: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base layer                                                          */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-espresso);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01' 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-espresso);
+    text-wrap: balance;
+  }
+
+  /* Visible, high-contrast focus states everywhere — never suppressed */
+  :focus-visible {
+    outline: 3px solid var(--color-clay);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-honey);
+    color: var(--color-espresso);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilities                                                           */
+/* ------------------------------------------------------------------ */
+@utility grain-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+@utility reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s var(--ease-warm), transform 0.7s var(--ease-warm);
+}
+
+@utility reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Component-layer custom classes                                      */
+/* Wrapped in @layer components so Tailwind utilities (hidden, sm:*,   */
+/* responsive display overrides, etc.) always win the cascade — an     */
+/* unlayered rule here would beat every layered utility regardless of  */
+/* source order and silently break things like "hidden sm:inline-flex".*/
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Live open/closed status pill */
+  .open-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: var(--radius-pill);
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: var(--color-oat);
+    color: var(--color-ink-muted);
+  }
+
+  .open-status-pill::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--dot-color, currentColor);
+    flex-shrink: 0;
+  }
+
+  /* Text stays espresso (not the accent hue) so it clears 4.5:1 on the pale
+     tinted backgrounds below; the dot alone carries the open/closed colour. */
+  .open-status-pill.is-open {
+    background-color: color-mix(in srgb, var(--color-sage) 16%, white);
+    color: var(--color-espresso);
+    --dot-color: var(--color-sage);
+  }
+
+  .open-status-pill.is-closed {
+    background-color: color-mix(in srgb, var(--color-clay) 12%, white);
+    color: var(--color-espresso);
+    --dot-color: var(--color-clay);
+  }
+
+  /* Menu category chip nav (scroll-spy) */
+  .menu-chip {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    border-radius: var(--radius-pill);
+    padding: 0.55rem 1.1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-muted);
+    background-color: var(--color-oat);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    scroll-snap-align: start;
+  }
+
+  .menu-chip.is-active {
+    background-color: var(--color-clay);
+    color: var(--color-cream);
+  }
+}
