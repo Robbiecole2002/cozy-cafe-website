@@ -99,9 +99,29 @@ Built to hit Lighthouse mobile Performance ≥ 95 and Accessibility/Best Practic
 
 ## Deploy
 
-A `netlify.toml` is included with sensible cache headers (long-lived immutable caching for hashed `_astro/*` assets) and security headers (CSP in `Content-Security-Policy-Report-Only` to start, `X-Content-Type-Options`, `Referrer-Policy`, `Strict-Transport-Security`, `X-Frame-Options`). Adjust the CSP once you've watched the reports and are ready to enforce it (rename the header to `Content-Security-Policy`).
+The repo is on GitHub at [Robbiecole2002/cozy-cafe-website](https://github.com/Robbiecole2002/cozy-cafe-website).
 
-For Vercel or Cloudflare Pages, the build is a standard static Astro build (`npm run build` → `dist/`); port the header rules from `netlify.toml` into that platform's config format (`vercel.json` headers, or a `_headers` file for Cloudflare Pages).
+### Cloudflare Pages (current target)
+
+1. In the Cloudflare dashboard, go to **Workers & Pages → Create → Pages → Connect to Git**, and pick this repo.
+2. Build settings:
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Node version**: 22 (set `NODE_VERSION=22` under Environment Variables if Cloudflare doesn't pick it up from `.node-version`/`engines`)
+3. Cloudflare Pages reads `public/_headers` automatically (it ends up at the root of `dist/` after build) for the same caching and security headers described below — no extra config needed.
+4. Every push to `main` triggers a new build and deploy automatically; PRs get preview deployments.
+
+### Netlify
+
+A `netlify.toml` is included with the same cache headers (long-lived immutable caching for hashed `_astro/*` assets) and security headers (CSP in `Content-Security-Policy-Report-Only` to start, `X-Content-Type-Options`, `Referrer-Policy`, `Strict-Transport-Security`, `X-Frame-Options`) as `public/_headers`, in Netlify's own config format. Connect the repo in the Netlify dashboard and it'll pick up `netlify.toml` automatically.
+
+### Vercel
+
+The build is a standard static Astro build (`npm run build` → `dist/`); port the header rules from `netlify.toml` / `public/_headers` into a `vercel.json` `headers` block.
+
+### Either way
+
+Adjust the CSP once you've watched the reports for a while and are ready to enforce it — rename `Content-Security-Policy-Report-Only` to `Content-Security-Policy` in both `netlify.toml` and `public/_headers`. See `TODO.md` for the inline-script caveat.
 
 ## Before launch
 
